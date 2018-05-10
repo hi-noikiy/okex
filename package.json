@@ -1,0 +1,22 @@
+{
+  "name": "okex",
+  "version": "1.0.0",
+  "description": "Setup enviorment:     1. setup nvm and install node         - (https://github.com/creationix/nvm/blob/master/README.md#usage)",
+  "main": "okex_wss.js",
+  "scripts": {
+    "test": "node okex_wss.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonzvz/okex.git"
+  },
+  "author": "jasonzvz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jasonzvz/okex/issues"
+  },
+  "homepage": "https://github.com/jasonzvz/okex#readme",
+  "dependencies": {
+    "ws": "^5.1.1"
+  }
+}
