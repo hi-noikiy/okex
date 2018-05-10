@@ -1,0 +1,6 @@
+Setup enviorment:
+    1. setup nvm and install node
+        - (https://github.com/creationix/nvm/blob/master/README.md#usage)
+
+npm module needed:
+    ws
