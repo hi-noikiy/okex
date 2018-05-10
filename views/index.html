@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title><%=title%></title>
+    <% include ./head.html %>
 </head>
 <body>
 	<% include ./header.html %>
-    <%= userinfo.username%>
+	<p>Data from server: </p>
     <ul>
         <li><%= data%></li>
     </ul>
