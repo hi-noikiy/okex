@@ -16,6 +16,15 @@
                 });
             }
 
+            function updateArgument() {
+                //example
+                var marginSetting = $("#marginSetting").val();
+                console.log("marginSetting: " + marginSetting);
+                $.post('/updateArgument', {'marginSetting':marginSetting}, function(data){
+                    console.log(data);
+                });
+            }
+
             //var ws = new WebSocket("wss://echo.websocket.org");
             var ws = new WebSocket('ws://127.0.0.1:8081');
 
@@ -25,8 +34,7 @@
             };
 
             ws.onmessage = function(data) {
-                console.log("decode data");
-                console.log(data.data);
+                //console.log(data.data);
                 var aaa = $("#word_field");
                 aaa.html("<li>" + data.data + "</li>");
             };
@@ -58,9 +66,14 @@
                         Here to control the server operation
                     </a>
 
-                    <ul class="nav navbar-nav">
-                        <li><button onclick="startMonitor()">Start Monitor</button</li>
-                    </ul>
+                    <!--ul class="nav navbar-nav">
+                        <li><button onclick="startMonitor()">Start Monitor</button></li>
+                    </ul-->
+
+                    <div>
+                        Margin Value Setting: <input type="text" id="marginSetting" name="margin" value="3">%<br>
+                        <button type="post-btn" onclick="updateArgument()">Update</button>
+                    </div>
                 </div>
             </div>
         </nav>
