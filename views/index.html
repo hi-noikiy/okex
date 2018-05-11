@@ -1,15 +1,72 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title><%=title%></title>
-    <% include ./head.html %>
-</head>
-<body>
-	<% include ./header.html %>
-	<p>Data from server: </p>
-    <ul>
-        <li><%= data%></li>
-    </ul>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>index</title>
+        <!-- views/partials/head.ejs -->
+        <meta charset="UTF-8">
+        <title>Super Awesome</title>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+            function startMonitor() {
+                //example
+                url = '/startMonitor';
+                $.get(url,function(data){
+                    console.log(data);
+                });
+            }
+
+            //var ws = new WebSocket("wss://echo.websocket.org");
+            var ws = new WebSocket('ws://127.0.0.1:8081');
+
+            ws.onopen = function(evt) { 
+                console.log("Connection open ..."); 
+                ws.send("{'event':'ping'}");
+            };
+
+            ws.onmessage = function(data) {
+                console.log("decode data");
+                console.log(data.data);
+                var aaa = $("#word_field");
+                aaa.html("<li>" + data.data + "</li>");
+            };
+
+            ws.onclose = function(evt) {
+                console.log("Connection closed.");
+            };      
+
+            function checkConnect() {
+                ws.send("{'event':'ping'}");
+            }
+        </script>
+
+        <!-- CSS (load bootstrap from a CDN) -->
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <style>
+            body    { padding-top:50px; }
+        </style>
+    </head>
+    <body>
+        <!-- views/partials/header.ejs -->
+
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+                        Here to control the server operation
+                    </a>
+
+                    <ul class="nav navbar-nav">
+                        <li><button onclick="startMonitor()">Start Monitor</button</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <p>Data from server: </p>
+        <ul id="data_list">
+        </ul>
+        <a id="word_field"></a>
+    </body>
 </html>
