@@ -36,7 +36,7 @@
             ws.onmessage = function(data) {
                 //console.log(data.data);
                 var aaa = $("#word_field");
-                aaa.html("<li>" + data.data + "</li>");
+                aaa.html(data.data);
             };
 
             ws.onclose = function(evt) {

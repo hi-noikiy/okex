@@ -16,9 +16,9 @@ local_wss.on('connection', function connection(local_ws) {
     local_ws.on('message', function incoming(message) {
         console.log('received: %s', message);
     });
-    //local_wss.clients.forEach(function each(client) {
-    //    client.send(g_data);
-    //});
+    local_wss.clients.forEach(function each(client) {
+        client.send(g_data);
+    });
 });
 
 if (true) {
@@ -31,7 +31,7 @@ if (true) {
         ws.send("{'event':'ping'}");
         //ws.send("{'event':'addChannel','parameters':{'binary': '1', 'type': 'all_ticker_3s'}}");
         ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'ticker'}}");
-        //ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'depth'}}");
+        ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'depth'}}");
         //ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'deal'}}");
         //ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'period': '15min', 'product': 'spot', 'quote': 'usdt', 'type': 'kline'}}");
     });
@@ -39,21 +39,21 @@ if (true) {
     ws.on('message', function incoming(message) {
         try {
             var array = JSON.parse(message);
-            console.log(array);
-            if (array.event !== undefined) {//false) {
+            if (array.event !== undefined) {
                 if (array.event == 'pong') {
                     g_data.lastHeartBeat = new Date().getTime();
+                    console.log("websocket alive");
                 }
             }
         }
         catch(e) {
             // Decode the websocket return binary data
-            console.log("not array");
             zlib.inflateRaw(message, function(err, result) {
                 var strData = String.fromCharCode.apply(null, new Uint16Array(result));
                 //var jsonObj = JSON.parse(strData);
                 //g_data = JSON.stringify(processData(jsonObj));
                 //console.log(strData);
+                g_data = strData;
                 local_wss.clients.forEach(function each(client) {
                     if (client !== ws && client.readyState === WebSocket.OPEN) {
                         client.send(strData);
@@ -156,36 +156,3 @@ app.post("/updateArgument", function(req, res) {
 
 app.listen(8080);
 console.log('8080 is the magic port');
-
-
-//var WebSocketServer = require('websocket').server;
-//var http = require('http');
-//
-//var server = http.createServer(function(request, response) {
-//  // process HTTP request. Since we're writing just WebSockets
-//  // server we don't have to implement anything.
-//});
-//server.listen(8081, function() { });
-//console.log('8081 is the websocket port');
-//
-//// create the server
-//wsServer = new WebSocketServer({
-//  httpServer: server
-//});
-//
-//// WebSocket server
-//wsServer.on('request', function(request) {
-//  var connection = request.accept(null, request.origin);
-//
-//  // This is the most important callback for us, we'll handle
-//  // all messages from users here.
-//  connection.on('message', function(message) {
-//    if (message.type === 'utf8') {
-//      // process WebSocket message
-//    }
-//  });
-//
-//  connection.on('close', function(connection) {
-//    // close user connection
-//  });
-//});
