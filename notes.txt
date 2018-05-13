@@ -1,0 +1,107 @@
+ws.send("{'event':'ping'}");
+	{'event':'pong'}
+
+ws.send("{'event':'addChannel','parameters':{'binary': '1', 'type': 'all_ticker_3s'}}");
+ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'ticker'}}");
+[
+  {
+    "base": "eos",
+    "binary": 1,
+    "data": {
+      "symbol": "eos_usdt",
+      "last": "13.6096",
+      "productId": 59,
+      "buy": "13.5813",
+      "change": "-1.3054",
+      "sell": "13.6137",
+      "outflows": "160160116.6564",
+      "dayLow": "12.0010",
+      "volume": "30624600.2491",
+      "high": "14.9390",
+      "createdDate": 1526177462777,
+      "inflows": "195491133.2658",
+      "low": "12.0010",
+      "marketFrom": 159,
+      "changePercentage": "-8.75%",
+      "currencyId": 59,
+      "close": "13.6096",
+      "dayHigh": "14.9390",
+      "open": "14.9150"
+    },
+    "product": "spot",
+    "quote": "usdt",
+    "type": "ticker"
+  }
+]
+
+ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'depth'}}");
+[
+  {
+    "base": "eos",
+    "binary": 1,
+    "data": {
+      "init": true,
+      "asks": [
+        {
+          "totalSize": "0",
+          "price": "15.0545"
+        },
+        {
+          "totalSize": "0",
+          "price": "15.0413"
+        },
+        {
+          "totalSize": "11.13",
+          "price": "13.6502"
+        },
+        {
+          "totalSize": "33.983",
+          "price": "13.6394"
+        }
+      ],
+      "bids": [
+        {
+          "totalSize": "0",
+          "price": "13.5209"
+        },
+        {
+          "totalSize": "12821.7103",
+          "price": "12.5"
+        },
+        {
+          "totalSize": "177.7481",
+          "price": "12.2023"
+        }
+      ]
+    },
+    "product": "spot",
+    "quote": "usdt",
+    "type": "depth"
+  }
+]
+ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'product': 'spot', 'quote': 'usdt', 'type': 'deal'}}");
+ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '1', 'period': '15min', 'product': 'spot', 'quote': 'usdt', 'type': 'kline'}}");
+
+
+
+
+
+
+
+
+https://www.okex.com/api/v1/depth.do?symbol=eos_usdt
+https://www.okex.com/api/v1/future_ticker.do?symbol=btc_usd&contract_type=this_week
+
+
+
+
+
+
+
+1. Get user account balance:
+https://www.okex.com/v2/asset/accounts/user-currency-balance?transferFrom=1
+
+
+https://www.okex.com/api/v1/userinfo.do
+api_key
+sign

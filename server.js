@@ -7,7 +7,8 @@ var ejs = require('ejs');
 var app = express();
 
 // global variable to store our processed data
-var g_data = {'overtime':8000};
+var g_future_data = [];
+var g_spot_data = [];
 
 // Create a wss for html to receive processed data
 const local_wss = new WebSocket.Server({ port: 8081 });
@@ -23,8 +24,8 @@ local_wss.on('connection', function connection(local_ws) {
 
 if (true) {
     // Create a ws to okex server
-    //const ws = new WebSocket('wss://okexcomreal.bafang.com:10441/websocket/okcoinapi');
-    const ws = new WebSocket('wss://real.okex.com:10440/websocket/okcoinapi');
+    const ws = new WebSocket('wss://okexcomreal.bafang.com:10441/websocket/okcoinapi');
+    //const ws = new WebSocket('wss://real.okex.com:10440/websocket/okcoinapi');
     ws.binaryType='arraybuffer';
 
     ws.on('open', function open() {
@@ -41,17 +42,18 @@ if (true) {
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_ticker'}");
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_deals'}");
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_balance'}");
-        //ws.send("{'event':'addChannel','channel':'ok_sub_futureusd_eos_depth_this_week'}");
-        //ws.send("{'event':'addChannel','parameters':{'base': 'eos', 'binary': '0', 'product': 'spot', 'quote': 'usdt', 'type': 'depth'}}");
+        ws.send("{'event':'addChannel','channel':'ok_sub_futureusd_eos_depth_this_week'}");
+        ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_usdt_depth'}");
     });
 
     ws.on('message', function incoming(message) {
         console.log('=================================================');
-        console.log(message);
-        //processData(message);
+        //console.log(message);
+        processData(JSON.parse(message));
         //if (true) {
-        //    var array = message;
-	//    console.log(array);
+        ////try {
+        //    var array = JSON.parse(message);
+	//    //console.log(array);
         //    if (array.event !== undefined) {
 	//	console.log('event');
         //    } 
@@ -60,6 +62,7 @@ if (true) {
         //    }
 	//    else {
 	//	console.log('else');
+	//    	console.log(array);
         //    }
         //}
 	//else {
@@ -145,17 +148,81 @@ app.use(bodyParser.json());
  *     type: 'ticker' } ]
  */
 function processData(data) {
-    var processed_data = {'symbol':'', 'sell':''};
-    var numOfData = data.length;
-    for (var i = 0; i < numOfData; i++) {
-        var obj = data[i].data;
-        if (obj.symbol !== undefined) {
-            console.log("===> " + obj.symbol + "  last=" + obj.last + "  buy=" + obj.buy + "  sell=" + obj.sell);
-            processed_data.symbol = obj.symbol;
-            processed_data.sell = obj.sell;
-        }
-    }
-    return processed_data;
+	var dataType = Object.prototype.toString.call(data).slice(8, -1);
+	switch(dataType) {
+		case 'Array':
+			// Data
+			console.log('Array');
+			console.log(data);
+			/* Process Future price depth */
+			var channel_type = data[0].channel;
+			switch(channel_type) {
+				case 'ok_sub_futureusd_eos_depth_this_week':
+					console.log('ok_sub_futureusd_eos_depth_this_week');
+					var obj = data[0].data;
+					var asks = obj.asks;
+					var bids = obj.bids;
+					if (asks != undefined) {
+					console.log("asks.length: " + asks.length);
+						if (asks[0] != undefined) {
+							console.log(asks[asks.length-1][0]);
+						}
+					}
+					if (bids != undefined) {
+					console.log("bids.length: " + bids.length);
+						if (bids[0] != undefined) {
+							console.log(bids[0][0]);
+						}
+					}
+					break;
+				case 'ok_sub_spot_eos_usdt_depth':
+					console.log('ok_sub_spot_eos_usdt_depth_10');
+					var obj = data[0].data;
+					var asks = obj.asks;
+					var bids = obj.bids;
+					if (asks != undefined) {
+					console.log("asks.length: " + asks.length);
+						if (asks[0] != undefined) {
+							console.log(asks[asks.length-1][0]);
+						}
+					}
+					if (bids != undefined) {
+					console.log("bids.length: " + bids.length);
+						if (bids[0] != undefined) {
+							console.log(bids[0][0]);
+						}
+					}
+					break;
+				default:
+					// Some addChannel return result
+					console.log('default');
+					break;
+			}
+			break;
+		case 'Object':
+			// ping event
+			console.log('Object');
+			break;
+		default:
+			// unknown
+			console.log('default');
+			break;
+	}
+	//console.log(data);
+        //var obj = data[0].data;
+	//var asks = obj.asks;
+	//var bids = obj.bids;
+	//if (asks != undefined) {
+	//	console.log(asks[asks.length-1][0]);
+	//}
+	//if (bids != undefined) {
+	//	console.log(bids[0][0]);
+	//}
+    return 0;
+}
+
+/* The array_a is the result at first return, array_b is the incremental array to update the array_a */
+function updateArray(array_a, array_b) {
 }
 
 app.get("/", function(req, res) {
