@@ -7,8 +7,49 @@ var ejs = require('ejs');
 var app = express();
 
 // global variable to store our processed data
-var g_future_data = [];
-var g_spot_data = [];
+var g_future_data = {asks:[], bids:[], timestamp:0};
+var g_spot_data = {asks:[], bids:[], timestamp:0};
+
+
+/* Sample data
+ * =================================================
+Array
+[ { binary: 0,
+    channel: 'ok_sub_spot_eos_usdt_depth_5',
+    data: { asks: [Array], bids: [Array], timestamp: 1526231136287 } } ]
+ok_sub_spot_eos_usdt_depth_5
+{ asks: 
+   [ [ '14.9', '2' ],
+     [ '14.899', '113.5501' ],
+     [ '14.898', '13.293' ],
+     [ '14.878', '80' ],
+     [ '14.8779', '50' ] ],
+  bids: 
+   [ [ '14.8727', '176.7307' ],
+     [ '14.87', '300' ],
+     [ '14.8423', '28.448' ],
+     [ '14.8355', '31.734' ],
+     [ '14.8347', '27.858' ] ],
+  timestamp: 1526231136287 }
+=================================================
+Array
+[ { binary: 0,
+    channel: 'ok_sub_futureusd_eos_depth_this_week_5',
+    data: { asks: [Array], bids: [Array], timestamp: 1526231136426 } } ]
+ok_sub_futureusd_eos_depth_this_week_5
+{ asks: 
+   [ [ 14.804, 682, 460.6863, 2038.9286, 3018 ],
+     [ 14.803, 362, 244.545, 1578.2423, 2336 ],
+     [ 14.802, 636, 429.6716, 1333.6973, 1974 ],
+     [ 14.801, 620, 418.8906, 904.0257, 1338 ],
+     [ 14.8, 718, 485.1351, 485.1351, 718 ] ],
+  bids: 
+   [ [ 14.788, 1039, 702.5967, 702.5967, 1039 ],
+     [ 14.787, 296, 200.1758, 902.7725, 1335 ],
+     [ 14.782, 739, 499.9323, 1402.7048, 2074 ],
+     [ 14.78, 365, 246.9553, 1649.6601, 2439 ],
+     [ 14.779, 281, 190.1346, 1839.7947, 2720 ] ],
+ */
 
 // Create a wss for html to receive processed data
 const local_wss = new WebSocket.Server({ port: 8081 });
@@ -38,12 +79,12 @@ if (true) {
         //ws.send("{'event':'addChannel','channel':'ok_sub_futuredusd_eos_ticker_this_week'}");
         // login (tested but no return value)
         //ws.send("{'event':'login','parameters':{'api_key':'c2b9cd0b-dd07-4893-b3b6-756d75112a4e','sign': '679DDCD8B471ADB045DA215076130230'}}");
-        ws.send("{'event':'ping'}");
+        //ws.send("{'event':'ping'}");
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_ticker'}");
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_deals'}");
         //ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_balance'}");
-        ws.send("{'event':'addChannel','channel':'ok_sub_futureusd_eos_depth_this_week'}");
-        ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_usdt_depth'}");
+        ws.send("{'event':'addChannel','channel':'ok_sub_futureusd_eos_depth_this_week_5'}");
+        ws.send("{'event':'addChannel','channel':'ok_sub_spot_eos_usdt_depth_5'}")
     });
 
     ws.on('message', function incoming(message) {
@@ -157,41 +198,17 @@ function processData(data) {
 			/* Process Future price depth */
 			var channel_type = data[0].channel;
 			switch(channel_type) {
-				case 'ok_sub_futureusd_eos_depth_this_week':
-					console.log('ok_sub_futureusd_eos_depth_this_week');
+				case 'ok_sub_futureusd_eos_depth_this_week_5':
+					console.log('ok_sub_futureusd_eos_depth_this_week_5');
 					var obj = data[0].data;
-					var asks = obj.asks;
-					var bids = obj.bids;
-					if (asks != undefined) {
-					console.log("asks.length: " + asks.length);
-						if (asks[0] != undefined) {
-							console.log(asks[asks.length-1][0]);
-						}
-					}
-					if (bids != undefined) {
-					console.log("bids.length: " + bids.length);
-						if (bids[0] != undefined) {
-							console.log(bids[0][0]);
-						}
-					}
+					console.log(obj);
+					g_future_data = obj;
 					break;
-				case 'ok_sub_spot_eos_usdt_depth':
-					console.log('ok_sub_spot_eos_usdt_depth_10');
+				case 'ok_sub_spot_eos_usdt_depth_5':
+					console.log('ok_sub_spot_eos_usdt_depth_5');
 					var obj = data[0].data;
-					var asks = obj.asks;
-					var bids = obj.bids;
-					if (asks != undefined) {
-					console.log("asks.length: " + asks.length);
-						if (asks[0] != undefined) {
-							console.log(asks[asks.length-1][0]);
-						}
-					}
-					if (bids != undefined) {
-					console.log("bids.length: " + bids.length);
-						if (bids[0] != undefined) {
-							console.log(bids[0][0]);
-						}
-					}
+					console.log(obj);
+					g_spot_data = obj;
 					break;
 				default:
 					// Some addChannel return result
@@ -222,7 +239,15 @@ function processData(data) {
 }
 
 /* The array_a is the result at first return, array_b is the incremental array to update the array_a */
-function updateArray(array_a, array_b) {
+function updateGlobalArray(array_a, array_b) {
+	var array_merged = [];
+	if (array_a.length == 0) {
+		array_merged = array_b;
+	}
+	else {
+		array_merged = array_a;
+	}
+	return array_merged;
 }
 
 app.get("/", function(req, res) {
