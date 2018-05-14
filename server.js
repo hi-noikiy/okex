@@ -9,6 +9,8 @@ var app = express();
 // global variable to store our processed data
 var g_future_data = {asks:[], bids:[], timestamp:0};
 var g_spot_data = {asks:[], bids:[], timestamp:0};
+var g_in_ratio_setting = 3.0; // 3%
+var g_out_ratio_setting = 1.0;// 1%
 
 
 /* Sample data
@@ -209,6 +211,8 @@ function processData(data) {
 					var obj = data[0].data;
 					console.log(obj);
 					g_spot_data = obj;
+					// Trigger calculation here because spot market is more active
+					calculateRatio(g_future_data, g_spot_data);
 					break;
 				default:
 					// Some addChannel return result
@@ -225,16 +229,6 @@ function processData(data) {
 			console.log('default');
 			break;
 	}
-	//console.log(data);
-        //var obj = data[0].data;
-	//var asks = obj.asks;
-	//var bids = obj.bids;
-	//if (asks != undefined) {
-	//	console.log(asks[asks.length-1][0]);
-	//}
-	//if (bids != undefined) {
-	//	console.log(bids[0][0]);
-	//}
     return 0;
 }
 
@@ -248,6 +242,22 @@ function updateGlobalArray(array_a, array_b) {
 		array_merged = array_a;
 	}
 	return array_merged;
+}
+
+/* 
+ * future_data_array: the global future data array
+ * spot_data_array  : the global spot data array 
+ */
+function calculateRatio(future_data_array, spot_data_array) {
+	var spot_asks_price = spot_data_array.asks[4][0];
+	var spot_bids_price = spot_data_array.bids[0][0];
+	var future_asks_price = future_data_array.asks[4][0];
+	var future_bids_price = future_data_array.bids[0][0];
+
+	var ratio_in = (future_bids_price - spot_asks_price) *100.0 / spot_asks_price;
+	var ratio_out= (spot_bids_price - future_asks_price) *100.0 / future_asks_price;
+	console.log('IN:  spot_asks_price:' + spot_asks_price + ', future_bids_price:' + future_bids_price + ', ratio_in: ' + ratio_in + '%' );
+	console.log('OUT: future_asks_price:' + future_asks_price + ', spot_bids_price:' + spot_bids_price + ', ratio_out: ' + ratio_out + '%');
 }
 
 app.get("/", function(req, res) {
