@@ -1,8 +1,11 @@
 const querystring = require('querystring');
 const https = require('https');
-const config = require('./config.js');
+const config = require('../config.js');
 const md5 = require('md5');
 const sortObject = require('sort-object-keys');
+const HttpsProxyAgent = require('https-proxy-agent');
+var proxy = process.env.https_proxy || 'https://127.0.0.1:1087';
+const agent = new HttpsProxyAgent(proxy);
 
 // It works
 function userinfo() {
@@ -25,7 +28,8 @@ function userinfo() {
       headers: {
            'Content-Type': 'application/x-www-form-urlencoded',
            'Content-Length': postDataWithSign.length
-         }
+         },
+	agent: agent
     };
 
     var req = https.request(options, (res) => {
@@ -69,7 +73,8 @@ function trade() {
       headers: {
            'Content-Type': 'application/x-www-form-urlencoded',
            'Content-Length': postDataWithSign.length
-         }
+         },
+	agent: agent
     };
 
     var req = https.request(options, (res) => {
@@ -111,7 +116,8 @@ function cancel_order() {
       headers: {
            'Content-Type': 'application/x-www-form-urlencoded',
            'Content-Length': postDataWithSign.length
-         }
+         },
+	agent: agent
     };
 
     var req = https.request(options, (res) => {
@@ -155,7 +161,8 @@ function account_records() {
       headers: {
            'Content-Type': 'application/x-www-form-urlencoded',
            'Content-Length': postDataWithSign.length
-         }
+         },
+	agent: agent
     };
 
     var req = https.request(options, (res) => {
@@ -175,6 +182,7 @@ function account_records() {
     req.end();
 }
 //account_records();
+console.log(process.env.https_proxy);
 
 // https://www.npmjs.com/package/md5
 // https://stackoverflow.com/questions/40537749/how-do-i-make-a-https-post-in-node-js-without-any-third-party-module
