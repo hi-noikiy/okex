@@ -7,6 +7,9 @@ const HttpsProxyAgent = require('https-proxy-agent');
 var proxy = process.env.https_proxy || 'https://127.0.0.1:1087';
 const agent = new HttpsProxyAgent(proxy);
 
+/* =====================================
+ * = Future
+ * =====================================*/
 // It works
 function userinfo() {
     var postDataList = {
@@ -503,6 +506,48 @@ function account_records() {
     req.end();
 }
 //account_records();
+
+
+/* =====================================
+ * = Future
+ * =====================================*/
+// It is a get funtion and will return the whole page in nodejs
+function future_index() {
+    var postDataList = sortObject({
+        'symbol':'eos_usd',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var postDataWithSign=queryString;
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/futre_index.do',
+      method: 'GET',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_index();
 
 // https://github.com/okcoin-okex/API-docs-OKEx.com/blob/master/API-For-Spot-EN/REST%20API%20for%20SPOT.md
 // https://support.okcoin.com/hc/en-us/articles/360000697832-REST-API-Reference
