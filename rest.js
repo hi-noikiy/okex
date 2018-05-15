@@ -48,15 +48,16 @@ function userinfo() {
     req.write(postDataWithSign);
     req.end();
 }
-userinfo();
+//userinfo();
 
+// It works
 function trade() {
     var postDataList = sortObject({
         'api_key':config.auth.api_key,
         'symbol':'eos_usdt',
-        'type':'0',
-        'price':'0',
-        'amount':'0',
+        'type':'buy',
+        'price':'0.1',
+        'amount':'0.1',
     });
     var queryString=querystring.stringify(postDataList);
     var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
@@ -95,11 +96,58 @@ function trade() {
 }
 //trade();
 
+// Not tested
+function batch_trade() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'type':'buy', //buy/sell
+        'orders_data':[{price:0.2,amount:5,type:'sell'},{price:0.1,amount:3,type:'buy'}],
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/trade.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//batch_trade();
+
+
+// It works
 function cancel_order() {
     var postDataList = sortObject({
         'api_key':config.auth.api_key,
         'symbol':'eos_usdt',
-        'order_id':'0',
+        'order_id':'290066737',
     });
     var queryString=querystring.stringify(postDataList);
     var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
@@ -136,6 +184,279 @@ function cancel_order() {
     req.write(postDataWithSign);
     req.end();
 }
+//cancel_order();
+
+// Error 10008 Unmatched sign
+function order_info() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'order_id':'-1',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/orders_info.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//order_info();
+
+// Return empty orders array
+function orders_info() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+	'type':'0', // 0: unfinished orders, 1: finshed orders
+        'symbol':'eos_usdt',
+        'order_id':'-1',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/orders_info.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//orders_info();
+
+// It works and show the deal_amount successfully
+function order_history() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+	'status':'0', // 0: unfinished orders, 1: finshed orders
+	'current_page':'1',
+	'page_length':'5',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/order_history.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//order_history();
+
+
+// Not tested yet
+function withdraw() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'chargefee':'0',
+        'trade_pwd':'',
+        'withdraw_address':'',
+        'withdraw_amount':'',
+        'target':'okex', //okcn,okcom,okex
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/withdraw.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//withdraw();
+
+// Not tested yet
+function cancel_withdraw() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'withdraw_id':'',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/cancel_withdraw.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//cancel_withdraw();
+
+// Not tested yet
+function withdraw_info() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'withdraw_id':'',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/withdraw_info.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//withdraw_info();
 
 // It works
 function account_records() {
@@ -182,10 +503,7 @@ function account_records() {
     req.end();
 }
 //account_records();
-console.log(process.env.https_proxy);
 
-// https://www.npmjs.com/package/md5
-// https://stackoverflow.com/questions/40537749/how-do-i-make-a-https-post-in-node-js-without-any-third-party-module
 // https://github.com/okcoin-okex/API-docs-OKEx.com/blob/master/API-For-Spot-EN/REST%20API%20for%20SPOT.md
 // https://support.okcoin.com/hc/en-us/articles/360000697832-REST-API-Reference
 
