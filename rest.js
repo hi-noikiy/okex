@@ -522,7 +522,7 @@ function future_index() {
     var options = {
       hostname: 'www.okex.com',
       port: 443,
-      path: '/api/v1/futre_index.do',
+      path: '/api/v1/future_index.do',
       method: 'GET',
       headers: {
            'Content-Type': 'application/x-www-form-urlencoded',
@@ -549,6 +549,591 @@ function future_index() {
 }
 //future_index();
 
+function future_hold_amount() {
+    var postDataList = sortObject({
+        'symbol':'eos_usd',
+	'contract_type':'this_week',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var postDataWithSign=queryString;
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_hold_amount.do',
+      method: 'GET',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_hold_amount();
+
+function future_userinfo() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_userinfo.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_userinfo();
+
+function future_trade() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'price':'0.1',
+	'amount':'0.1',
+        'type':'1',
+	'match_price':'1',
+	'lever_rate':'10', // no need for order
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_trade.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_userinfo.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_userinfo();
+
+function future_posiition() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'contract_type':'this_week',
+        'symbol':'eos_usdt',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_position.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_position();
+
+function future_trade() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'price':'0.1',
+	'amount':'0.1',
+        'type':'1',
+	'match_price':'1',
+	'lever_rate':'10', // no need for order
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_trade.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_trade();
+
+function future_trades_history() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+	'date':'yyyy-MM-dd',
+	'since':'1', // order id
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_trades_history.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_trades_history();
+
+function future_batch_trade() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'orders_data':'[{price:0.1,amount:2,type:1,match_price:1},{price:0.1,amount:2,type:1,match_price:1}]',
+	'lever_rate':'10', // no need for order
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_batch_trade.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_batch_trade();
+
+function future_cancel() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+	'order_id':'1,2,3',
+        'contract_type':'this_week',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_cancel.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_cancel();
+
+function future_order_info() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'status':'1',
+	'order_id':'-1',
+	'current_page':'1',
+	'page_length':'5',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_order_info.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_order_info();
+
+function future_orders_info() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'order_id':'1,2,3',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_orders_info.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_orders_info();
+
+function future_userinfo_4fix() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_userinfo_4fix.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_userinfo_4fix();
+
+function future_explosive() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'contract_type':'this_week',
+	'status':'1',
+	'current_page':'1',
+	'page_number':'1',
+	'page_length':'5',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_explosive.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_explosive();
+
+function future_devolve() {
+    var postDataList = sortObject({
+        'api_key':config.auth.api_key,
+        'symbol':'eos_usdt',
+        'type':'',
+        'amount':'0.1',
+    });
+    var queryString=querystring.stringify(postDataList);
+    var toHarshString=queryString+'&secret_key='+config.auth.secret_key;
+    console.log(toHarshString);
+    var sign=md5(toHarshString).toUpperCase();
+    var postDataWithSign=queryString+'&sign='+sign;
+    console.log("postDataWithSign: " + postDataWithSign);
+
+    var options = {
+      hostname: 'www.okex.com',
+      port: 443,
+      path: '/api/v1/future_devolve.do',
+      method: 'POST',
+      headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Content-Length': postDataWithSign.length
+         },
+	agent: agent
+    };
+
+    var req = https.request(options, (res) => {
+      console.log('statusCode:', res.statusCode);
+      console.log('headers:', res.headers);
+
+      res.on('data', (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(e);
+    });
+
+    req.write(postDataWithSign);
+    req.end();
+}
+//future_devolve();
 // https://github.com/okcoin-okex/API-docs-OKEx.com/blob/master/API-For-Spot-EN/REST%20API%20for%20SPOT.md
 // https://support.okcoin.com/hc/en-us/articles/360000697832-REST-API-Reference
 
